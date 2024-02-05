@@ -10,38 +10,33 @@ int evalTerm(int A, int B, int C, char *term) {
     {
         if (term[i] == 'A') 
         {
-            result = result && A;
+            if (i + 1 < len && term[i+1] == '\'')
+                result = result && !A;
+            else
+                result = result && A;
         } 
         else if (term[i] == 'B') 
         {
-            result = result && B;
+            if (i + 1 < len && term[i+1] == '\'')
+                result = result && !B;
+            else
+                result = result && B;
         } 
         else if (term[i] == 'C') 
         {
-            result = result && C;
-        }
-        else if (term[i] == '\'') 
-        {
-            // Negate the next variable
-            if (term[i+1] == 'A') 
-            {
-                result = result && !A;
-            } 
-            else if (term[i+1] == 'B') 
-            {
-                result = result && !B;
-            } 
-            else if (term[i+1] == 'C') 
-            {
+            if (i + 1 < len && term[i+1] == '\'')
                 result = result && !C;
-            }
-            i++; // Skip the next character (negation symbol)
+            else
+                result = result && C;
         }
     }
+    //printf("Result %d\n", result);
     return result;
 }
 
 int main(int argc, char *argv[]) {
+    // int A = 0, B = 0, C = 0;
+    int outputTemp = 0, outputFinal = 0;
     if (argc != 2) 
     {
         printf("Usage: %s \"Boolean function\"\n", argv[0]);
@@ -53,6 +48,9 @@ int main(int argc, char *argv[]) {
     // Get the first token, Tokenize the function based on '+'
     char *term = strtok(function, " .,-:+");
     
+    // Initialize output outside the term loop
+    int output = 0;
+
     //
     while (term != NULL) 
     {
@@ -66,8 +64,10 @@ int main(int argc, char *argv[]) {
                 {
                     // Evaluate the function for each combination of A, B, C
                     int output = 0;
-                    output = output || evalTerm (A, B, C, term);
-                    printf("%d %d %d\n", A,B,C);
+                    output = evalTerm (A, B, C, term); //output || 
+                    //output1 = evalTerm (A, B, C, term1);
+                    //output2 = evalTerm (A, B, C, term2);
+                    //output =  output1 || output2;
                     //printf("%d\t%d\t%d\t%d\n", A, B, C, output);
                 }
             }
