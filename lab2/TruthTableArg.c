@@ -41,15 +41,25 @@ int evalTerm(int A, int B, int C, char *term)
 
 int main(int argc, char *argv[]) {
     // Check if there are enough arguments
-    if (argc < 3 )
+    if (argc < 2) 
     {
-        printf("Not enough arguments. Example: %s \"ABC\" + \"AC'\" + \"B'\" + \"BC'\"...\n", argv[0]);
+        printf("Invalid number of arguments. Example: %s \"ABC\" + \"AC'\" + \"B'\" + \"BC'\"...\n", argv[0]);
         return 1;
     }
 
+    //
+    int size = 0;
+    if (argc <= 6)
+    {
+        size = argc/2;
+    }
+    else
+    {
+        size = argc*10;
+    }
     // Allocate memory for arrays
-    char *term[500]; // +1 for NULL Terminator if ever use argv/2 for the array number, but it could cause limited number of arguments
-    char op[500]; //Increase to 500 so that the program could take more than, 1 string argument is superior https://github.com/chuongdks/COMP_2650.git
+    char *term[size]; // +1 for NULL Terminator if ever use argv/2 for the array number, but it could cause limited number of arguments
+    char op[size]; //Increase to argc*100 so that the program could take more than 9 arguments, 1 string argument is superior https://github.com/chuongdks/COMP_2650.git
     
     // Iterate over arguments
     int i = 1;
