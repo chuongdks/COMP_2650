@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
     }
 
     // Allocate memory for arrays
-    char *term[argc/2]; // +1 for NULL Terminator
-    char op[argc/2];
+    char *term[500]; // +1 for NULL Terminator if ever use argv/2 for the array number, but it could cause limited number of arguments
+    char op[500]; //Increase to 500 so that the program could take more than, 1 string argument is superior https://github.com/chuongdks/COMP_2650.git
     
     // Iterate over arguments
     int i = 1;
@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
         printf("%s %c ", term[j], op[j]);
         j++;
     }
+
     // Check if operators is '+'
     j = 0;
     while (op[j] != '\0') 
