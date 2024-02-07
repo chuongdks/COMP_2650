@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    //
+    //Change size depend on how many arguments, program will have error if does not scale the number of arguments
     int size = 0;
     if (argc <= 6)
     {
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     }
     // Allocate memory for arrays
     char *term[size]; // +1 for NULL Terminator if ever use argv/2 for the array number, but it could cause limited number of arguments
-    char op[size]; //Increase to argc*100 so that the program could take more than 9 arguments, 1 string argument is superior https://github.com/chuongdks/COMP_2650.git
+    char op[size]; //Increase to argc*10 so that the program could take more than 9 arguments, 1 string argument is superior https://github.com/chuongdks/COMP_2650.git
     
     // Iterate over arguments
     int i = 1;
