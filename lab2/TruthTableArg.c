@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     }
     else
     {
-        size = argc*10;
+        size = argc*1000;
     }
     // Allocate memory for arrays
     char *term[size]; // +1 for NULL Terminator if ever use argv/2 for the array number, but it could cause limited number of arguments
