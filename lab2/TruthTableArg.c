@@ -70,7 +70,15 @@ int main(int argc, char *argv[]) {
                 // Walk through other tokens 
                 for (int i = 1; i < argc; i++)
                 {
-                    if (i % 2 != 0)
+                    if (i % 2 == 0)
+                    {
+                        if (argv[i][0] != '+')
+                        {
+                            printf("Error: Invalid operator. The correct arguments is: %s \"ABC\" + \"AC'\" + \"B'\" + \"BC'\"...\n", argv[0]);
+                            return 1;
+                        }
+                    }
+                    else if (i % 2 != 0)
                     {
                         output = output || evalTerm (A, B, C, argv[i]); 
                     }

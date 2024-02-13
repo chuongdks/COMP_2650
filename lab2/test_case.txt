@@ -1,0 +1,3 @@
+./test "ABC" + "ABC'" + "AB'C" + "AB'C'" + "A'BC" + "A'BC'" + "A'B'C" + "A" + "B" + "C" + "AB" + "A'"
+./test "AB'" + "BC'" + "ABC" + "A'B'C'"
+./test "AC" + "B"
