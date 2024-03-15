@@ -2,77 +2,45 @@
 #include <stdlib.h>
 #include <string.h>
 
-void get2Complement (char *binary) 
+void complement (char *binary) 
 {
     // Calculate 1's complement
     for (int i = 0; i < strlen(binary); i++) 
     {
         binary[i] = ((binary[i] == '0') ? '1' : '0');
     }
-
-    // Add 1 to the 1's complement to make a 2's complement
-    int carry = 1;
-    for (int i = strlen(binary) - 1; i >= 0; i--) 
-    {
-        if (binary[i] == '1' && carry == 1)
-        {
-            binary[i] = '0';
-        }
-        else if (binary[i] == '0' && carry == 1)
-        {
-            binary[i] = '1';
-            carry = 0;
-        }
-    }
-    binary [strlen(binary)] = '\0'; //add a null at the end of the binary string
 }
 
-void Parse (char *binary) 
+void parseBinary (char *binary) 
 {
-    int size = strlen(binary), decimal = 0;
     // Check if the binary string contains only 0s and 1s
-    for (int i = 0; i < size; i++) 
+    for (int i = 0; i < strlen(binary); i++) 
     {
         if (binary[i] != '0' && binary[i] != '1') 
         {
             printf("Error: Invalid binary number\n");
-            exit(0);
+            exit(1);
         }
     }
+}
 
-    // Check if the MSB is 1 (indicating a negative number)
-    int isNegative = (binary[0] == '1');
-    //If the binary is a negative number, Flip the bit -> Add 1 -> and change # = -#
-    if (isNegative) 
+void addZeros(char *binary, int new_length) 
+{
+    int original_size = strlen(binary);
+    int i,j;
+
+    // binary[i] is the replacement, binary[j] is the OG
+    // Shift the OG content to the right String and padded with '0' on the left String
+    for (i = new_length - 1; i >= new_length - original_size; i--) 
     {
-        get2Complement (binary);
+        binary[i] = binary[j];
     }
 
-    // Convert binary to decimal using bit shifting
-    for (int i = size - 1; i >= 0; i--) 
+    // Padded the rest of the binary String on the left with '0'
+    for (i = 0; i < new_length - original_size; i++) 
     {
-        // Convert character '0' or '1' to integer 0 or 1
-        int bit = binary[i] - '0';
-        
-        // Multiply the current bit by 2 to the power of its position (LSB to MSB)
-        // and add it to the decimal sum
-        decimal += bit * (1 << (size - 1 - i)); //(1 << (size - 1 - i)) this part shift 1 to the left of 0, 1, 2, 3,...7
+        binary[i] = '0';
     }
-
-    // Adjust the decimal value if it's a negative number
-    if (isNegative) 
-    {
-        decimal = -decimal;
-        get2Complement (binary);
-    }
-
-    //If the number is larger than 127, return the program
-    if (decimal > 127 || decimal < -128)
-    {
-        printf("Error: Binary number is larger than 127 or lower than -128. Enter range from -128 to 127\n");
-        exit(0);
-    }
-    printf("The decimal number is: %d\n", decimal);
 }
 
 void Add (char *num1, char op, char *num2, char *result) 
