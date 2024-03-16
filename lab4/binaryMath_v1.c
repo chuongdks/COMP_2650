@@ -33,12 +33,12 @@ void addZeros (char **binary, int new_length)
     *binary = malloc((new_length + 1) * sizeof(char));
 
     // Shift the OG content to the right String and padded with '0' on the left String
-    for (int i = 0; i < original_size; i++) 
+    for (int i = 1; i <= original_size; i++) 
     {
-        int new_loop = new_length - original_size + i;
-        int old_loop = i;
+        int new_loop = new_length - i;
+        int old_loop = original_size - i;
         (*binary)[new_loop] = temp[old_loop];
-        printf("new_loop: %d, old_loop: %d\n", new_loop, old_loop);
+        // printf("new_loop: %d, old_loop: %d\n", new_loop, old_loop);
     }
 
     // Padded the rest of the binary String on the left with '0'
@@ -63,21 +63,48 @@ char FullAdder (char A, char B, char C, char *S)
 
 char AddSub(char *N1, char *N2, char C, char *R) 
 {
-    int size = sizeof(R) + 1;
-    printf("Carry Original: %c\n", C);
+    int N1_size = strlen(N1);
+    int N2_size = strlen(N2);
+    int biggerNumber;
 
+    if (N1_size > N2_size) 
+    {
+        biggerNumber = N1_size;
+        addZeros(&N2, N1_size);
+    }
+    else   
+    {
+        biggerNumber = N2_size;
+        addZeros(&N1, N2_size);
+    }
+
+    printf("%s\n", N1);
+    printf("%s\n", N2);
+
+    parseBinary(N1);
+    parseBinary(N2);
+
+    printf("Size of big: %d\n", biggerNumber);
+    R = malloc((biggerNumber+1) * sizeof(char));
+    printf("Size of result: %d\n", sizeof(R));
     if (C == '1') 
     {
         complement(N2);
     }
+    printf("Carry Original: %c\n", C);
 
-    for (int i = size - 1; i >= 0; i--) 
+    for (int i = biggerNumber - 1; i >= 0; i--) 
     {
         C = FullAdder(N1[i], N2[i], C, &R[i]);
         printf("Loop number %d:\n", i);
         printf("Sum: %c\n", R[i]);
         printf("Carry: %c\n", C);
     }
+
+    // Terminate the string with null character
+    R[biggerNumber] = '\0';
+
+    printf("%s", R);
 
     return C;
 }
@@ -93,38 +120,18 @@ int main(int argc, char *argv[]) {
     char operator = argv[2][0];
     char *binary_num2 = argv[3];
 
-    int N1_size = strlen(binary_num1);
-    int N2_size = strlen(binary_num2);
-    int biggerNumber;
-
-    if (N1_size > N2_size) 
-    {
-        biggerNumber = N1_size;
-        addZeros(&binary_num2, N1_size);
-    }
-    else   
-    {
-        biggerNumber = N2_size;
-        addZeros(&binary_num1, N2_size);
-    }
-
-    printf("%s\n", binary_num1);
-    printf("%s\n", binary_num2);
-
-    parseBinary(binary_num1);
-    parseBinary(binary_num2);
-
     if (operator != '+' && operator != '-') 
     {
         printf("Error: Operator must be '+' or '-'.\n");
         return 1;
     }
 
-    char result[biggerNumber];
-    
+    // printf("Size of big: %d\n", biggerNumber);
+    char *result;
+
     char carry = AddSub(binary_num1, binary_num2, (operator == '-') ? '1' : '0', result);
 
-    printf("%s\n", result);
+    //printf("%s\n", result);
     return 0;
 }
 
