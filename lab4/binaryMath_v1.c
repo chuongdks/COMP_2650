@@ -78,27 +78,22 @@ char AddSub(char *N1, char *N2, char C, char *R)
         addZeros(&N1, N2_size);
     }
 
-    printf("%s\n", N1);
-    printf("%s\n", N2);
+    printf("Binary number 1: %s\n", N1);
+    printf("Binary number 2: %s\n", N2);
 
     parseBinary(N1);
     parseBinary(N2);
 
-    printf("Size of big: %d\n", biggerNumber);
     R = malloc((biggerNumber+1) * sizeof(char));
-    printf("Size of result: %d\n", sizeof(R));
+
     if (C == '1') 
     {
         complement(N2);
     }
-    printf("Carry Original: %c\n", C);
 
     for (int i = biggerNumber - 1; i >= 0; i--) 
     {
         C = FullAdder(N1[i], N2[i], C, &R[i]);
-        printf("Loop number %d:\n", i);
-        printf("Sum: %c\n", R[i]);
-        printf("Carry: %c\n", C);
     }
 
     // Terminate the string with null character
