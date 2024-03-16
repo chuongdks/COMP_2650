@@ -24,113 +24,115 @@ void parseBinary (char *binary)
     }
 }
 
-void addZeros(char *binary, int new_length) 
+void addZeros (char **binary, int new_length) 
 {
-    int original_size = strlen(binary);
-    int i,j;
+    char *temp = *binary;
+    int original_size = strlen(temp);
 
-    // binary[i] is the replacement, binary[j] is the OG
+    // Allocate memory for the new binary string
+    *binary = malloc((new_length + 1) * sizeof(char));
+
     // Shift the OG content to the right String and padded with '0' on the left String
-    for (i = new_length - 1; i >= new_length - original_size; i--) 
+    for (int i = 0; i < original_size; i++) 
     {
-        binary[i] = binary[j];
+        int new_loop = new_length - original_size + i;
+        int old_loop = i;
+        (*binary)[new_loop] = temp[old_loop];
+        printf("new_loop: %d, old_loop: %d\n", new_loop, old_loop);
     }
 
     // Padded the rest of the binary String on the left with '0'
-    for (i = 0; i < new_length - original_size; i++) 
+    for (int i = 0; i < new_length - original_size; i++) 
     {
-        binary[i] = '0';
+        (*binary)[i] = '0';
     }
+
+    // Terminate the string with null character
+    (*binary)[new_length] = '\0';
+
+    // printf("Shifted number: %s\n", *binary);
 }
 
-void Add (char *num1, char op, char *num2, char *result) 
+char FullAdder (char A, char B, char C, char *S) 
 {
-    int decimal = 0, size = strlen(num1);
-    // If the operator is '-', get 2's complement of the second binary number
-    if (op == '-') 
+
+    int sum_bit = (A - '0') + (B - '0') + (C - '0');
+    S[0] = (sum_bit % 2) + '0'; // For Full-Adder, Sum = (# of Inputs % 2)
+    return (sum_bit / 2) + '0'; // For Full-Adder, Carry = (# of Inputs / 2)
+}
+
+char AddSub(char *N1, char *N2, char C, char *R) 
+{
+    int size = sizeof(R) + 1;
+    printf("Carry Original: %c\n", C);
+
+    if (C == '1') 
     {
-        get2Complement(num2);
+        complement(N2);
     }
 
-    // Add the two binary numbers
-    int carry = 0;
-    for (int i = strlen(num1) - 1; i >= 0; i--) 
-    {
-        int sum = (num1[i] - 48) + (num2[i] - 48) + carry; //num[i] - '0' to convert the string '0' and '1' to an integer number (48 - 48 = 0; 49 - 48 = 1)
-        result[i] = (sum % 2) + 48; //0 + 0 = 0; 0 + 1 = 1,; only 1 + 1 = 0 carry 1. If the sum = 2, its remainder is 0. At the end add 48 to turn it into a string value again
-        carry = sum / 2; //If the sum is 2 then the carry will be equal to 1, else it is 0
-    }
-
-    // Check if the MSB is 1 (indicating a negative number)
-    int isNegative = (result[0] == '1');
-    //If the binary is a negative number, Flip the bit -> Add 1 -> and change # = -#
-    if (isNegative) 
-    {
-        get2Complement (result);
-    }
-
-    // Loop through the binary array in reverse order to check if the decimal value of binary is within -128, 127
     for (int i = size - 1; i >= 0; i--) 
     {
-        // Convert character '0' or '1' to integer 0 or 1
-        int bit = result[i] - '0';
-        
-        // Multiply the current bit by 2 to the power of its position (LSB to MSB)
-        // and add it to the decimal sum
-        decimal += bit * (1 << (size - 1 - i)); //(1 << (size - 1 - i)) this part shift 1 to the left of 0, 1, 2, 3,...7
+        C = FullAdder(N1[i], N2[i], C, &R[i]);
+        printf("Loop number %d:\n", i);
+        printf("Sum: %c\n", R[i]);
+        printf("Carry: %c\n", C);
     }
 
-    // Adjust the decimal value if it's a negative number
-    if (isNegative) 
-    {
-        decimal = -decimal;
-        get2Complement (result);
-    }
-
-    //If the number is larger than 127, return the program
-    if (decimal > 127 || decimal < -128)
-    {
-        printf("Error: Result of Binary number is larger than 127 or lower than -128. Enter range from -128 to 127\n");
-        exit(0);
-    }
-
-    // Print the result
-    printf("%s %c %s = %s\n", num1, op, num2, result);
-    printf("The result decimal number is: %d\n", decimal);
+    return C;
 }
 
 int main(int argc, char *argv[]) {
     if (argc != 4) 
     {
-        printf("Error: Too many number of arguments. The format is < Binary1 > < +/- > < Binary2 >\n");
+        printf("Usage: %s <binary_number1> <+ or -> <binary_number2>\n", argv[0]);
         return 1;
     }
 
-    char *num1 = argv[1];
-    char op = argv[2][0];
-    char *num2 = argv[3];
+    char *binary_num1 = argv[1];
+    char operator = argv[2][0];
+    char *binary_num2 = argv[3];
 
-    int resultSize = strlen(num1);
-    char result[resultSize];
-    result[resultSize] = '\0';
+    int N1_size = strlen(binary_num1);
+    int N2_size = strlen(binary_num2);
+    int biggerNumber;
 
-    if (op != '+' && op != '-') 
+    if (N1_size > N2_size) 
     {
-        printf("Error: Invalid operator\n");
-        return 1;
+        biggerNumber = N1_size;
+        addZeros(&binary_num2, N1_size);
     }
-
-    if (strlen (num1) > 8 || strlen (num2) > 8)
+    else   
     {
-        printf("Error: Binary String too big. Use only 8 bits\n");
+        biggerNumber = N2_size;
+        addZeros(&binary_num1, N2_size);
+    }
+
+    printf("%s\n", binary_num1);
+    printf("%s\n", binary_num2);
+
+    parseBinary(binary_num1);
+    parseBinary(binary_num2);
+
+    if (operator != '+' && operator != '-') 
+    {
+        printf("Error: Operator must be '+' or '-'.\n");
         return 1;
     }
 
-    // Check if the strings are correct binary number
-    Parse (num1);
-    Parse (num2);
+    char result[biggerNumber];
+    
+    char carry = AddSub(binary_num1, binary_num2, (operator == '-') ? '1' : '0', result);
 
-    // Call the function with the provided arguments
-    Add (num1, op, num2, result);
+    printf("%s\n", result);
     return 0;
 }
+
+
+/*
+* The reason why the changes you made to binary inside the addZeros function are not reflected in main is because you're passing binary_num1 and binary_num2 as pointers to characters (char*). 
+* When you pass these pointers to the addZeros function, you're essentially passing the address of the strings stored in argv, not the actual arrays themselves. 
+* Therefore, modifying binary inside addZeros only modifies the local variable binary within the function, not the original strings binary_num1 and binary_num2 in main.
+
+* To make the changes reflect in main, you need to pass the address of the pointers (char**) so that you can modify the pointers themselves. Here's how you can do it:
+*/
