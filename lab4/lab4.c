@@ -66,6 +66,7 @@ char AddSub(char *N1, char *N2, char C, char *R)
     int N1_size = strlen(N1);
     int N2_size = strlen(N2);
     int biggerNumber;
+    char C1, C0;
 
     if (N1_size > N2_size) 
     {
@@ -95,7 +96,14 @@ char AddSub(char *N1, char *N2, char C, char *R)
     // Terminate the string with null character
     R[biggerNumber] = '\0';
 
-    printf("%s + %s = %s\n", N1, N2, R);
+    if (C == '1')
+    {
+        printf("%s + %s = %c%s\n", N1, N2, C, R);
+    }
+    else
+    {
+        printf("%s + %s = %s\n", N1, N2, R);
+    }
 
     return C;
 }
