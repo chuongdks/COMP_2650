@@ -91,12 +91,24 @@ char AddSub(char *N1, char *N2, char C, char *R)
     for (int i = biggerNumber - 1; i >= 0; i--) 
     {
         C = FullAdder(N1[i], N2[i], C, &R[i]);
+
+        // Assign the carry bit of the MSB and the one next to the MSB
+        if (i == 1)
+        {
+            C1 = C;
+        }
+        else if (i == 0)
+        {
+            C0 = C;
+        }
     }
 
     // Terminate the string with null character
     R[biggerNumber] = '\0';
 
-    if (C == '1')
+    // If the carry into the sign bit position and the carry out of the sign bit position are different --> Overflow signed number
+    // Could increase the size of result by 1 and added the overflow bit, OR just put the carry bit next to it, cheesing.
+    if (C1 != C0)
     {
         printf("%s + %s = %c%s\n", N1, N2, C, R);
     }
@@ -104,7 +116,7 @@ char AddSub(char *N1, char *N2, char C, char *R)
     {
         printf("%s + %s = %s\n", N1, N2, R);
     }
-
+  
     return C;
 }
 
