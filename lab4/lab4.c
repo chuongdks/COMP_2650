@@ -13,6 +13,11 @@ void complement (char *binary)
 
 void parseBinary (char *binary) 
 {
+    if (strlen(binary) > 100)
+    {
+        printf("100 bits is the limit\n");
+        exit(1);
+    }
     // Check if the binary string contains only 0s and 1s
     for (int i = 0; i < strlen(binary); i++) 
     {
