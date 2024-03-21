@@ -52,7 +52,7 @@ void addZerosOrOnes (char **binary, int new_length)
     // Padded the rest of the binary String on the left with '0'
     for (int i = 0; i < new_length - original_size; i++) 
     {
-        if ((*binary)[new_length - original_size] == 0)
+        if ((*binary)[new_length - original_size] == '0')
         {
             (*binary)[i] = '0';
         }
