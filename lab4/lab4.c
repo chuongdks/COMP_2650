@@ -13,11 +13,13 @@ void complement (char *binary)
 
 void parseBinary (char *binary) 
 {
+    // Exit if over 100 bits
     if (strlen(binary) > 100)
     {
         printf("100 bits is the limit\n");
         exit(1);
     }
+
     // Check if the binary string contains only 0s and 1s
     for (int i = 0; i < strlen(binary); i++) 
     {
@@ -29,15 +31,16 @@ void parseBinary (char *binary)
     }
 }
 
-void addZeros (char **binary, int new_length) 
+void addZerosOrOnes (char **binary, int new_length) 
 {
+    // Old binary String
     char *temp = *binary;
     int original_size = strlen(temp);
 
     // Allocate memory for the new binary string
     *binary = malloc((new_length + 1) * sizeof(char));
 
-    // Shift the OG content to the right String and padded with '0' on the left String
+    // Shift the OG content to the right String and padded with '0' or '1' on the left String
     for (int i = 1; i <= original_size; i++) 
     {
         int new_loop = new_length - i;
@@ -49,7 +52,14 @@ void addZeros (char **binary, int new_length)
     // Padded the rest of the binary String on the left with '0'
     for (int i = 0; i < new_length - original_size; i++) 
     {
-        (*binary)[i] = '0';
+        if ((*binary)[new_length - original_size] == 0)
+        {
+            (*binary)[i] = '0';
+        }
+        else
+        {
+            (*binary)[i] = '1';
+        }
     }
 
     // Terminate the string with null character
@@ -60,7 +70,7 @@ void addZeros (char **binary, int new_length)
 
 char FullAdder (char A, char B, char C, char *S) 
 {
-
+    // Logic like the first lab1.c
     int sum = (A - 48) + (B - 48) + (C - 48);
     S[0] = (sum % 2) + 48; // For Full-Adder, Sum = (# of Inputs % 2)
     return (sum / 2) + 48; // For Full-Adder, Carry = (# of Inputs / 2)
@@ -73,26 +83,30 @@ char AddSub(char *N1, char *N2, char C, char *R)
     int biggerNumber;
     char C1, C0;
 
+    // Choose which Binary string is larger
     if (N1_size > N2_size) 
     {
         biggerNumber = N1_size;
-        addZeros(&N2, N1_size);
+        addZerosOrOnes(&N2, N1_size);
     }
     else   
     {
         biggerNumber = N2_size;
-        addZeros(&N1, N2_size);
+        addZerosOrOnes(&N1, N2_size);
     }
 
     printf("Same length: N1 = %s\t N2 = %s\n", N1, N2);
 
+    // Allocate memory for the Result binary string
     R = malloc((biggerNumber+1) * sizeof(char));
 
+    // 1's Compliment the second binary number if the first Carry bit = 1
     if (C == '1') 
     {
         complement(N2);
     }
 
+    // Assign the Resulting bit one by one Starting from the LSB to MSB
     for (int i = biggerNumber - 1; i >= 0; i--) 
     {
         C = FullAdder(N1[i], N2[i], C, &R[i]);
@@ -151,7 +165,6 @@ int main(int argc, char *argv[]) {
     parseBinary(binary_num1);
     parseBinary(binary_num2);
 
-    // printf("Size of big: %d\n", biggerNumber);
     char *result;
 
     char carry = AddSub(binary_num1, binary_num2, (operator == '-') ? '1' : '0', result);
@@ -161,6 +174,7 @@ int main(int argc, char *argv[]) {
 
 
 /*
+* Ask chatgpt why u need extra asterisk in function addZerosOrOnes()
 * The reason why the changes you made to binary inside the addZeros function are not reflected in main is because you're passing binary_num1 and binary_num2 as pointers to characters (char*). 
 * When you pass these pointers to the addZeros function, you're essentially passing the address of the strings stored in argv, not the actual arrays themselves. 
 * Therefore, modifying binary inside addZeros only modifies the local variable binary within the function, not the original strings binary_num1 and binary_num2 in main.
