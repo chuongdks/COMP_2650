@@ -161,13 +161,46 @@ int main(int argc, char *argv[]) {
         printf("E.g.: ./LinuxAddSub 1000111111111111101011 + 1111110000111101111\n");
     }
 
-    printf("You entered %s and %s\n", binary_num1, binary_num2);
     parseBinary(binary_num1);
     parseBinary(binary_num2);
 
+    // New Binary Number with an extra bit on the left to prevent Overflow
+    char *new_binary_num1;
+    char *new_binary_num2;
+
+    // FInd the left most bit and add that number
+    if (binary_num1[0] == '1') 
+    {
+        new_binary_num1 = malloc(strlen(binary_num1) + 2); // + 2 to add space for the extra bit and null terminator '\0'
+        strcpy(new_binary_num1, "1");
+        strcat(new_binary_num1, binary_num1); 
+    } 
+    else 
+    {
+        new_binary_num1 = malloc(strlen(binary_num1) + 2); // + 2 to add space for the extra bit and null terminator '\0'
+        strcpy(new_binary_num1, "0");
+        strcat(new_binary_num1, binary_num1); 
+    }
+
+    // FInd the left most bit and add that number
+    if (binary_num2[0] == '1') 
+    {
+        new_binary_num2 = malloc(strlen(binary_num2) + 2); // + 2 to add space for the extra bit and null terminator '\0'
+        strcpy(new_binary_num2, "1");
+        strcat(new_binary_num2, binary_num2); 
+    } 
+    else 
+    {
+        new_binary_num2 = malloc(strlen(binary_num2) + 2); // + 2 to add space for the extra bit and null terminator '\0'
+        strcpy(new_binary_num2, "0");
+        strcat(new_binary_num2, binary_num2); 
+    }
+
+    printf("You entered %s and %s\n", new_binary_num1, new_binary_num2);    
+
     char *result;
 
-    char carry = AddSub(binary_num1, binary_num2, (operator == '-') ? '1' : '0', result);
+    char carry = AddSub(new_binary_num1, new_binary_num2, (operator == '-') ? '1' : '0', result);
 
     return 0;
 }
